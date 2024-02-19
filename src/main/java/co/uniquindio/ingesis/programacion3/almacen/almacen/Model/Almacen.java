@@ -111,7 +111,7 @@ public class Almacen {
         listaClientees = listaClientees.stream().filter(clientee -> !clientee.getCedula().equals(cedula)).collect(Collectors.toList());
 
     }
-    public void registrarProducto(String codigo,String nombre,String descripcion,double valorUnitario, int cantidadExistencia,String codigoAprovado,double temperatura,Date venvimiento, Date fechaEnvasado,double pesoEnvase){
+    public void registrarProducto(String codigo,String nombre,String descripcion,double valorUnitario, int cantidadExistencia,String codigoAprovado,double temperatura,LocalDate vencimiento, LocalDate fechaEnvasado,double pesoEnvase){
 
     }
 

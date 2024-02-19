@@ -1,9 +1,6 @@
 package co.uniquindio.ingesis.programacion3.almacen.almacen.Controllers;
-import co.uniquindio.ingesis.programacion3.almacen.almacen.Model.Almacen;
-import co.uniquindio.ingesis.programacion3.almacen.almacen.Model.Clientee;
+import co.uniquindio.ingesis.programacion3.almacen.almacen.Model.*;
 import co.uniquindio.ingesis.programacion3.almacen.almacen.Model.Almacen.*;
-import co.uniquindio.ingesis.programacion3.almacen.almacen.Model.PerJuridica;
-import co.uniquindio.ingesis.programacion3.almacen.almacen.Model.PerNatural;
 import co.uniquindio.ingesis.programacion3.almacen.almacen.exceptions.AtributoVacioException;
 import co.uniquindio.ingesis.programacion3.almacen.almacen.exceptions.InformacionRepetidaException;
 import javafx.collections.FXCollections;
@@ -62,6 +59,42 @@ public class VentanaPrincipalController implements Initializable {
     private TextField nombreTxt;
 
     @FXML
+    private TextField codigoAprobadoTxt;
+
+    @FXML
+    private DatePicker dPfechaenvasado;
+
+    @FXML
+    private DatePicker dPfechavencimiento;
+
+    @FXML
+    private AnchorPane productoEnvasadoPane;
+
+    @FXML
+    private AnchorPane productoPerecederoPane;
+
+    @FXML
+    private AnchorPane productoRefrigeradoPane;
+
+    @FXML
+    private TextField valorUnitarioTxt;
+
+
+
+    @FXML
+    private TextField codigoTxt;
+
+
+    @FXML
+    private TextField telefonoTxt;
+
+    @FXML
+    private TextField temperaturaTxt;
+
+    @FXML
+    private ComboBox<String> tipoProductoCb;
+
+    @FXML
     private TextField mailTxt;
 
     @FXML
@@ -80,14 +113,18 @@ public class VentanaPrincipalController implements Initializable {
     @FXML
     private Button productoButton;
 
-    @FXML
-    private TextField telefonoTxt;
 
     @FXML
     private ComboBox<String> tipoperComboBox;
 
     @FXML
     private TableView<Clientee> clienteTBL;
+    @FXML
+    private TableView<Producto> tablaProductosTv;
+    @FXML
+    private Button cancelarProductoButton;
+    @FXML
+    private Button guardarProductoButton;
 
     private ContextMenu cmOpciones;
 
@@ -102,6 +139,11 @@ public class VentanaPrincipalController implements Initializable {
         ObservableList<String> items = FXCollections.observableArrayList(opcione);
         tipoperComboBox.setItems(items);
         tipoperComboBox.setValue("seleccione");
+
+        String[] opciones2 = {"prodEnvasado","prodPerecederos","prodRefrigerados"};
+        ObservableList<String> items2 = FXCollections.observableArrayList(opciones2);
+        tipoProductoCb.setItems(items2);
+        tipoProductoCb.setValue("seleccione");
 
         cargarClientes();
 
@@ -170,11 +212,44 @@ public class VentanaPrincipalController implements Initializable {
         productoAnchorPane.setVisible(pane2);
     }
 
-    public void visivlitiesPanesMnini(boolean pane1,boolean pane2){
+    public void visivlitiesPanesMnini(boolean pane1,boolean pane2) {
         perJuridicaAp.setVisible(pane1);
         pernaturalAp.setVisible(pane2);
-        log.info("pane1"+pane1);
-        log.info("pane2"+pane2);
+
+    }
+
+    public void visivilitiesProductPane(boolean pane1,boolean pane2,boolean pane3){
+        productoEnvasadoPane.setVisible(pane1);
+        productoPerecederoPane.setVisible(pane2);
+        productoRefrigeradoPane.setVisible(pane3);
+
+    }
+
+    public void onabretecesamoClick(ActionEvent e) {
+
+        String value = tipoperComboBox.getValue();
+
+        if(value.equals("natural")){
+            visivlitiesPanesMnini(false,true);
+
+        }
+        else if(value.equals("juridica")){
+            visivlitiesPanesMnini(true,false);
+        }
+
+    }
+
+    public void onAbreteCesamo2(ActionEvent event) {
+
+        String value = tipoProductoCb.getValue();
+
+        if(value.equals("prodEnvasado")){
+            visivilitiesProductPane(true,false,false);
+        } else if (value.equals("prodPerecederos")) {
+            visivilitiesProductPane(false,true,false);
+        } else if (value.equals("prodRefrigerados")) {
+            visivilitiesProductPane(false,false,true);
+        }
     }
 
     public void onClientesButtonClick(ActionEvent e) {
@@ -246,20 +321,6 @@ public class VentanaPrincipalController implements Initializable {
         tipoperComboBox.getSelectionModel().select("seleccione");
     }
 
-
-    public void onabretecesamoClick(ActionEvent e) {
-
-        String value = tipoperComboBox.getValue();
-
-        if(value.equals("natural")){
-            visivlitiesPanesMnini(false,true);
-
-        }
-        else if(value.equals("juridica")){
-            visivlitiesPanesMnini(true,false);
-        }
-
-    }
 
     public void cargarClientes(){
         clienteTBL.getItems().clear();
