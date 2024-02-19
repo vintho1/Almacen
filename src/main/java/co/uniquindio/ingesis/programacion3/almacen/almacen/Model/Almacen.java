@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
+import java.util.stream.Collectors;
 
 @Log
 @Getter
@@ -67,6 +68,7 @@ public class Almacen {
             throw new InformacionRepetidaException(("textoInformacionRepetidaException"));
         }
 
+
         if(option.equals("natural")){
 
             PerNatural perNatural = PerNatural.builder()
@@ -105,6 +107,10 @@ public class Almacen {
         }
     }
 
+    public void eliminatCliente(String cedula){
+        listaClientees = listaClientees.stream().filter(clientee -> !clientee.getCedula().equals(cedula)).collect(Collectors.toList());
+
+    }
     public void registrarProducto(String codigo,String nombre,String descripcion,double valorUnitario, int cantidadExistencia,String codigoAprovado,double temperatura,Date venvimiento, Date fechaEnvasado,double pesoEnvase){
 
     }

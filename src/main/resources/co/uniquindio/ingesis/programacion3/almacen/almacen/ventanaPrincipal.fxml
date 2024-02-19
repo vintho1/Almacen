@@ -84,7 +84,7 @@
                </children>
             </AnchorPane>
             <Button fx:id="guardarButton" layoutX="421.0" layoutY="583.0" mnemonicParsing="false" onAction="#onGuardarClientButtonClick" style="-fx-background-color: #b5d9e0;" text="guardar" />
-            <Button fx:id="cancelarButton" layoutX="529.0" layoutY="583.0" mnemonicParsing="false" onAction="#onGuardarClientButtonClick" style="-fx-background-color: #b5d9e0;" text="cancelar" />
+            <Button fx:id="cancelarButton" layoutX="529.0" layoutY="583.0" mnemonicParsing="false" onAction="#btnCancelaronCtion" style="-fx-background-color: #b5d9e0;" text="cancelar" />
             <AnchorPane layoutX="238.0" layoutY="14.0" prefHeight="566.0" prefWidth="544.0" style="-fx-border-style: solid; -fx-border-radius: 5; -fx-background-color: #104246;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
                   <TableView fx:id="clienteTBL" layoutX="8.0" layoutY="8.0" prefHeight="549.0" prefWidth="530.0" style="-fx-border-radius: 5;" />

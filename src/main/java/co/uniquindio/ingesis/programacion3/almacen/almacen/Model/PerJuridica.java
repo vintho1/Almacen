@@ -7,5 +7,5 @@ import lombok.experimental.SuperBuilder;
 @Data @SuperBuilder
 public class PerJuridica extends Clientee {
 
-    private String nit;
+    private String nit ;
 }

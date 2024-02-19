@@ -10,6 +10,6 @@ import java.util.Date;
 @Data @SuperBuilder
 public class PerNatural extends Clientee {
 
-    private String mail;
+    private String mail ;
     private LocalDate fechaNacimiento;
 }

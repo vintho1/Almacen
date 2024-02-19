@@ -53,6 +53,9 @@ public class VentanaPrincipalController implements Initializable {
     private DatePicker fechaDP;
 
     @FXML
+    private Button cancelarButton;
+
+    @FXML
     private Button guardarButton;
 
     @FXML
@@ -104,8 +107,19 @@ public class VentanaPrincipalController implements Initializable {
 
         cmOpciones = new ContextMenu();
         MenuItem miEditar  = new MenuItem("Editar");
-        cmOpciones.getItems().addAll(miEditar);
+        MenuItem miEliminar = new MenuItem("Eliminar");
+        cmOpciones.getItems().addAll(miEditar,miEliminar);
 
+        miEliminar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                int index = clienteTBL.getSelectionModel().getSelectedIndex();
+                Clientee clienteEliminar = clienteTBL.getItems().get(index);
+                almacen.eliminatCliente(clienteEliminar.getCedula());
+
+                cargarClientes();
+            }
+        });
         miEditar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -133,6 +147,8 @@ public class VentanaPrincipalController implements Initializable {
                     nitTxt.setText(((PerJuridica) clienteselect).getNit());
 
                 }
+
+                cancelarButton.setDisable(false);
 
             }
         });
@@ -167,25 +183,54 @@ public class VentanaPrincipalController implements Initializable {
     }
 
     public void onGuardarClientButtonClick(){
-        try {
-            almacen.registrarCliente(nombreTxt.getText(), apellidoTxt.getText(), identificacionTxt.getText(), direccionTxt.getText(), telefonoTxt.getText(), mailTxt.getText(), fechaDP.getValue(), nitTxt.getText(), tipoperComboBox.getValue());
-        } catch (AtributoVacioException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InformacionRepetidaException e) {
-            throw new RuntimeException(e);
+
+
+        if(clienteselect == null){
+            try {
+                almacen.registrarCliente(nombreTxt.getText(), apellidoTxt.getText(), identificacionTxt.getText(), direccionTxt.getText(), telefonoTxt.getText(), mailTxt.getText(), fechaDP.getValue(), nitTxt.getText(), tipoperComboBox.getValue());
+            } catch (AtributoVacioException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InformacionRepetidaException e) {
+                throw new RuntimeException(e);
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("jujujui");
+            alert.setHeaderText(null);
+            alert.setContentText("se registro correctamente la tarea");
+            alert.initStyle(StageStyle.UTILITY);
+            alert.showAndWait();
+
+            limpiarcamposCliente();
+            cargarClientes();
+        }else{
+
+            clienteselect.setNombre(nombreTxt.getText());
+            clienteselect.setApellido(apellidoTxt.getText());
+            clienteselect.setCedula(identificacionTxt.getText());
+            clienteselect.setDirecciion(direccionTxt.getText());
+            clienteselect.setTelefono(telefonoTxt.getText());
+
+
+            if(clienteselect instanceof PerNatural){
+                visivlitiesPanesMnini(false,true);
+                ((PerNatural) clienteselect).setMail(mailTxt.getText());
+                ((PerNatural) clienteselect).setFechaNacimiento(fechaDP.getValue());
+            }else if(clienteselect instanceof PerJuridica){
+                visivlitiesPanesMnini(true,false);
+                ((PerJuridica) clienteselect).setNit(nitTxt.getText());
+            }
+            limpiarcamposCliente();
+            cargarClientes();
+            clienteselect = null;
+            cancelarButton.setDisable(true);
+
+
+
         }
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("jujujui");
-        alert.setHeaderText(null);
-        alert.setContentText("se registro correctamente la tarea");
-        alert.initStyle(StageStyle.UTILITY);
-        alert.showAndWait();
-
-        limpiarcamposCliente();
-        cargarClientes();
 
     }
 
@@ -245,6 +290,14 @@ public class VentanaPrincipalController implements Initializable {
         clienteTBL.setItems(observableList);
         clienteTBL.getColumns().addAll(nombrecol,apellidocol,cedulacol,direccioncol,telefonocol,nitcol,mailcol,fechacol);
 
+
+
+    }
+
+    public void btnCancelaronCtion(ActionEvent event) {
+        clienteselect = null;
+        limpiarcamposCliente();
+        cancelarButton.setDisable(true);
 
 
     }
