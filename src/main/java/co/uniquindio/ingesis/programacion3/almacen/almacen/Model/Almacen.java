@@ -112,6 +112,11 @@ public class Almacen {
         listaClientees = listaClientees.stream().filter(clientee -> !clientee.getCedula().equals(cedula)).collect(Collectors.toList());
 
     }
+
+    public void eliminarProducto(String codigo){
+        listaProductors = listaProductors.stream().filter(producto -> !producto.getCodigo().equals(codigo)).collect(Collectors.toList());
+
+    }
     public void registrarProducto(String codigo,String nombre,String descripcion,String valorUnitario, String cantidadExistencia,String codigoAprovado,String temperatura,LocalDate vencimiento, LocalDate fechaEnvasado,String pesoEnvase,String optione2) throws InformacionRepetidaException {
         if (listaProductors.stream().anyMatch(producto -> producto.getCodigo().equals(codigo))){
             crearAlertaError(("textoTituloAlertaErrorInformacionRepetida"), ("textoContenidoAlertaErrorInformacionRepetida"));

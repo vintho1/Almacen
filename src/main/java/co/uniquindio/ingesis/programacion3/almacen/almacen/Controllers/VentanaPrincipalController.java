@@ -77,9 +77,9 @@ public class VentanaPrincipalController implements Initializable {
     @FXML
     private Button cancelarButton;
     @FXML
-    private Button cancelarProductoButton;
-    @FXML
     private Button guardarProductoButton;
+    @FXML
+    private Button cancelarProductoButton;
 
     //----------------Pane-------------------------------------------------
     @FXML
@@ -111,6 +111,7 @@ public class VentanaPrincipalController implements Initializable {
     private ContextMenu cmOpciones;
     private ContextMenu cmOpciones2;
     private Clientee clienteselect;
+    private Producto productoSelect;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -134,7 +135,46 @@ public class VentanaPrincipalController implements Initializable {
         cmOpciones.getItems().addAll(miEditar,miEliminar);
 
         cmOpciones2 = new ContextMenu();
-        
+        MenuItem miEditarProducto = new MenuItem("Editar");
+        MenuItem miEliminarProducto = new MenuItem("Eliminar");
+        cmOpciones2.getItems().addAll(miEditarProducto,miEliminarProducto);
+
+        miEditarProducto.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                int index = tablaProductosTv.getSelectionModel().getSelectedIndex();
+                productoSelect = tablaProductosTv.getItems().get(index);
+                System.out.println(productoSelect);
+
+
+                codigoTxt.setText(productoSelect.getCodigo());
+                nombreProductoTxt.setText(productoSelect.getNombre());
+                DescripcionTxt.setText(productoSelect.getDescripcion());
+                valorUnitarioTxt.setText(productoSelect.getValorUnitario());
+                cantidadExistentext.setText(productoSelect.getCantidadExistencia());
+
+                if(productoSelect instanceof ProdEvasado) {
+                    visivilitiesProductPane(true,false,false);
+                    dPfechaenvasado.setValue(((ProdEvasado) productoSelect).getFechaEnvasado());
+                    pesoEnvaseTxt.setText(((ProdEvasado) productoSelect).getPesoEnvase());
+                } else if (productoSelect instanceof  ProdPerecederos) {
+                    visivilitiesProductPane(false,true,false);
+                    dPfechavencimiento.setValue(((ProdPerecederos) productoSelect).getVencimiento());
+                } else if (productoSelect instanceof  ProdRefrigerado) {
+                    visivilitiesProductPane(false,false,true);
+                    codigoAprobadoTxt.setText(((ProdRefrigerado) productoSelect).getCodigoAprovado());
+                    temperaturaTxt.setText(((ProdRefrigerado) productoSelect).getTemperatura());
+                }
+                cancelarProductoButton.setDisable(false);
+
+
+            }
+        });
+
+
+
+
 
         miEditar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -168,6 +208,18 @@ public class VentanaPrincipalController implements Initializable {
 
             }
         });
+        miEliminarProducto.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                int index = tablaProductosTv.getSelectionModel().getSelectedIndex();
+                Producto productoEliminar = tablaProductosTv.getItems().get(index);
+                almacen.eliminarProducto(productoEliminar.getCodigo());
+
+                cargarProductos();
+
+            }
+        });
         miEliminar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -180,6 +232,7 @@ public class VentanaPrincipalController implements Initializable {
         });
 
         clienteTBL.setContextMenu(cmOpciones);
+        tablaProductosTv.setContextMenu(cmOpciones2);
 
     }
 
@@ -242,16 +295,44 @@ public class VentanaPrincipalController implements Initializable {
     }
 
     public void onGuardarProducto( ) {
-          try {
-              almacen.registrarProducto(codigoTxt.getText(), nombreProductoTxt.getText(), DescripcionTxt.getText(), valorUnitarioTxt.getText(), cantidadExistentext.getText(), codigoAprobadoTxt.getText(), temperaturaTxt.getText(), dPfechavencimiento.getValue(), dPfechaenvasado.getValue(), pesoEnvaseTxt.getText(), tipoProductoCb.getValue());
-          } catch (InformacionRepetidaException e) {
-              throw new RuntimeException(e);
-          }
-
-          limpiarcamposProducto();
-          cargarProductos();
 
 
+        if(productoSelect == null) {
+            try {
+                almacen.registrarProducto(codigoTxt.getText(), nombreProductoTxt.getText(), DescripcionTxt.getText(), valorUnitarioTxt.getText(), cantidadExistentext.getText(), codigoAprobadoTxt.getText(), temperaturaTxt.getText(), dPfechavencimiento.getValue(), dPfechaenvasado.getValue(), pesoEnvaseTxt.getText(), tipoProductoCb.getValue());
+            } catch (InformacionRepetidaException e) {
+                throw new RuntimeException(e);
+            }
+
+            limpiarcamposProducto();
+            cargarProductos();
+
+        }else{
+
+            productoSelect.setCodigo(codigoTxt.getText());
+            productoSelect.setNombre(nombreProductoTxt.getText());
+            productoSelect.setDescripcion(DescripcionTxt.getText());
+            productoSelect.setValorUnitario(valorUnitarioTxt.getText());
+            productoSelect.setCantidadExistencia(cantidadExistentext.getText());
+
+            if(productoSelect instanceof ProdEvasado) {
+                visivilitiesProductPane(true,false,false);
+                ((ProdEvasado) productoSelect).setFechaEnvasado(dPfechaenvasado.getValue());
+                ((ProdEvasado) productoSelect).setPesoEnvase(pesoEnvaseTxt.getText());
+            } else if (productoSelect instanceof  ProdPerecederos) {
+                visivilitiesProductPane(false,true,false);
+                ((ProdPerecederos) productoSelect).setVencimiento(dPfechavencimiento.getValue());
+            } else if (productoSelect instanceof  ProdRefrigerado) {
+                visivilitiesProductPane(false,false,true);
+                ((ProdRefrigerado) productoSelect).setCodigoAprovado(codigoAprobadoTxt.getText());
+                ((ProdRefrigerado) productoSelect).setTemperatura(temperaturaTxt.getText());
+            }
+            limpiarcamposProducto();
+            cargarProductos();
+            productoSelect = null;
+            cancelarProductoButton.setDisable(true);
+
+        }
 
     }
 
