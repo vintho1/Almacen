@@ -10,5 +10,5 @@ import java.util.Date;
 public class ProdEvasado extends Producto {
 
     private LocalDate fechaEnvasado;
-    private double pesoEnvase;
+    private String pesoEnvase;
 }

@@ -27,110 +27,90 @@ import java.util.ResourceBundle;
 public class VentanaPrincipalController implements Initializable {
 
     private final Almacen almacen = Almacen.getInstance();
-
+//-----------------cliente---------------------------------
+    @FXML
+    private TextField nombreTxt;
     @FXML
     private TextField apellidoTxt;
-
-    @FXML
-    private ImageView cerrarVentana1;
-
-    @FXML
-    private AnchorPane clienteAnchorPane;
-
-    @FXML
-    private Button clienteButton;
-
-    @FXML
-    private TextField direccionTxt;
-
     @FXML
     private TextField identificacionTxt;
-
+    @FXML
+    private TextField direccionTxt;
+    @FXML
+    private TextField telefonoTxt;
+    @FXML
+    private TextField mailTxt;
+    @FXML
+    private TextField nitTxt;
     @FXML
     private DatePicker fechaDP;
 
-    @FXML
-    private Button cancelarButton;
-
-    @FXML
-    private Button guardarButton;
-
-    @FXML
-    private TextField nombreTxt;
-
-    @FXML
-    private TextField codigoAprobadoTxt;
-
-    @FXML
-    private DatePicker dPfechaenvasado;
-
-    @FXML
-    private DatePicker dPfechavencimiento;
-
-    @FXML
-    private AnchorPane productoEnvasadoPane;
-
-    @FXML
-    private AnchorPane productoPerecederoPane;
-
-    @FXML
-    private AnchorPane productoRefrigeradoPane;
-
-    @FXML
-    private TextField valorUnitarioTxt;
-
-
-
+//----------productos-----------------------------------------
     @FXML
     private TextField codigoTxt;
-
-
     @FXML
-    private TextField telefonoTxt;
-
+    private TextField nombreProductoTxt;
+    @FXML
+    private TextField DescripcionTxt;
+    @FXML
+    private TextField valorUnitarioTxt;
+    @FXML
+    private TextField cantidadExistentext;
+    @FXML
+    private DatePicker dPfechaenvasado;
+    @FXML
+    private TextField pesoEnvaseTxt;
+    @FXML
+    private DatePicker dPfechavencimiento;
+    @FXML
+    private TextField codigoAprobadoTxt;
     @FXML
     private TextField temperaturaTxt;
+//------------Buttons---------------------------------
 
     @FXML
-    private ComboBox<String> tipoProductoCb;
-
-    @FXML
-    private TextField mailTxt;
-
-    @FXML
-    private TextField nitTxt;
-
-    @FXML
-    private AnchorPane productoAnchorPane;
-
-    @FXML
-    private AnchorPane perJuridicaAp;
-
-    @FXML
-    private AnchorPane pernaturalAp;
-
-
+    private Button clienteButton;
     @FXML
     private Button productoButton;
-
-
     @FXML
-    private ComboBox<String> tipoperComboBox;
-
+    private Button guardarButton;
     @FXML
-    private TableView<Clientee> clienteTBL;
-    @FXML
-    private TableView<Producto> tablaProductosTv;
+    private Button cancelarButton;
     @FXML
     private Button cancelarProductoButton;
     @FXML
     private Button guardarProductoButton;
 
+    //----------------Pane-------------------------------------------------
+    @FXML
+    private AnchorPane clienteAnchorPane;
+    @FXML
+    private AnchorPane productoEnvasadoPane;
+    @FXML
+    private AnchorPane productoPerecederoPane;
+    @FXML
+    private AnchorPane productoRefrigeradoPane;
+    @FXML
+    private AnchorPane productoAnchorPane;
+    @FXML
+    private AnchorPane perJuridicaAp;
+    @FXML
+    private AnchorPane pernaturalAp;
+    //---------------ComboBox------------------------
+    @FXML
+    private ComboBox<String> tipoProductoCb;
+    @FXML
+    private ComboBox<String> tipoperComboBox;
+    //---------------TableView------------------------
+    @FXML
+    private TableView<Clientee> clienteTBL;
+    @FXML
+    private TableView<Producto> tablaProductosTv;
+    @FXML
+    private ImageView cerrarVentana1;
     private ContextMenu cmOpciones;
-
+    private ContextMenu cmOpciones2;
     private Clientee clienteselect;
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -146,22 +126,16 @@ public class VentanaPrincipalController implements Initializable {
         tipoProductoCb.setValue("seleccione");
 
         cargarClientes();
+        cargarProductos();
 
         cmOpciones = new ContextMenu();
         MenuItem miEditar  = new MenuItem("Editar");
         MenuItem miEliminar = new MenuItem("Eliminar");
         cmOpciones.getItems().addAll(miEditar,miEliminar);
 
-        miEliminar.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                int index = clienteTBL.getSelectionModel().getSelectedIndex();
-                Clientee clienteEliminar = clienteTBL.getItems().get(index);
-                almacen.eliminatCliente(clienteEliminar.getCedula());
+        cmOpciones2 = new ContextMenu();
+        
 
-                cargarClientes();
-            }
-        });
         miEditar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -192,6 +166,16 @@ public class VentanaPrincipalController implements Initializable {
 
                 cancelarButton.setDisable(false);
 
+            }
+        });
+        miEliminar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                int index = clienteTBL.getSelectionModel().getSelectedIndex();
+                Clientee clienteEliminar = clienteTBL.getItems().get(index);
+                almacen.eliminatCliente(clienteEliminar.getCedula());
+
+                cargarClientes();
             }
         });
 
@@ -257,6 +241,20 @@ public class VentanaPrincipalController implements Initializable {
         if(e.getTarget()== productoButton){visivlitiesPanes(false,true);}
     }
 
+    public void onGuardarProducto( ) {
+          try {
+              almacen.registrarProducto(codigoTxt.getText(), nombreProductoTxt.getText(), DescripcionTxt.getText(), valorUnitarioTxt.getText(), cantidadExistentext.getText(), codigoAprobadoTxt.getText(), temperaturaTxt.getText(), dPfechavencimiento.getValue(), dPfechaenvasado.getValue(), pesoEnvaseTxt.getText(), tipoProductoCb.getValue());
+          } catch (InformacionRepetidaException e) {
+              throw new RuntimeException(e);
+          }
+
+          limpiarcamposProducto();
+          cargarProductos();
+
+
+
+    }
+
     public void onGuardarClientButtonClick(){
 
 
@@ -289,6 +287,7 @@ public class VentanaPrincipalController implements Initializable {
             clienteselect.setTelefono(telefonoTxt.getText());
 
 
+
             if(clienteselect instanceof PerNatural){
                 visivlitiesPanesMnini(false,true);
                 ((PerNatural) clienteselect).setMail(mailTxt.getText());
@@ -309,6 +308,21 @@ public class VentanaPrincipalController implements Initializable {
 
     }
 
+    private void limpiarcamposProducto(){
+        codigoTxt.setText("");
+        nombreProductoTxt.setText("");
+        DescripcionTxt.setText("");
+        valorUnitarioTxt.setText("");
+        cantidadExistentext.setText("");
+        codigoAprobadoTxt.setText("");
+        temperaturaTxt.setText("");
+        dPfechavencimiento.setValue(null);
+        dPfechaenvasado.setValue(null);
+        pesoEnvaseTxt.setText("");
+        tipoProductoCb.getSelectionModel().select("seleccione");
+
+    }
+
     private void limpiarcamposCliente(){
         nombreTxt.setText("");
         apellidoTxt.setText("");
@@ -319,6 +333,41 @@ public class VentanaPrincipalController implements Initializable {
         nitTxt.setText("");
         fechaDP.setValue(null);
         tipoperComboBox.getSelectionModel().select("seleccione");
+    }
+
+
+    public void cargarProductos(){
+        tablaProductosTv.getItems().clear();
+        tablaProductosTv.getItems().clear();
+
+        ObservableList<Producto> observableList = tablaProductosTv.getItems();
+        observableList.addAll(almacen.getListaProductors());
+
+        TableColumn codigocol = new TableColumn("Codigo");
+        TableColumn nombrecol = new TableColumn("Nombre");
+        TableColumn descripcioncol = new TableColumn("Descripcion");
+        TableColumn valorUnitariocol = new TableColumn("Valor Unitario");
+        TableColumn cantidadexistenciacol = new TableColumn("CantidadExistencia");
+        TableColumn codigoaprobadocol = new TableColumn("Codigo Aprovado");
+        TableColumn temperaturacol = new TableColumn("Temperatura");
+        TableColumn fechaVencimientocol = new TableColumn("Fecha Vencimiento");
+        TableColumn fechaenvasecol = new TableColumn("Fecha Envase");
+        TableColumn pesoEnvasecol = new TableColumn("Peso Envase");
+
+        codigocol.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+        nombrecol.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        descripcioncol.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        valorUnitariocol.setCellValueFactory(new PropertyValueFactory<>("valorUnitario"));
+        cantidadexistenciacol.setCellValueFactory(new PropertyValueFactory<>("cantidadExistencia"));
+        codigoaprobadocol.setCellValueFactory(new PropertyValueFactory<>("codigoAprovado"));
+        temperaturacol.setCellValueFactory(new PropertyValueFactory<>("temperatura"));
+        fechaVencimientocol.setCellValueFactory(new PropertyValueFactory<>("vencimiento"));
+        fechaenvasecol.setCellValueFactory(new PropertyValueFactory<>("fechaEnvasado"));
+        pesoEnvasecol.setCellValueFactory(new PropertyValueFactory<>("pesoEnvase"));
+
+
+        tablaProductosTv.setItems(observableList);
+        tablaProductosTv.getColumns().addAll(codigocol,nombrecol,descripcioncol,valorUnitariocol,cantidadexistenciacol,codigoaprobadocol,temperaturacol,fechaVencimientocol,fechaenvasecol,pesoEnvasecol);
     }
 
 

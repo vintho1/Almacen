@@ -27,6 +27,7 @@ public class Almacen {
     private Almacen(){
 
         listaClientees = new ArrayList<>();
+        listaProductors = new ArrayList<>();
 
         try {
 
@@ -111,7 +112,57 @@ public class Almacen {
         listaClientees = listaClientees.stream().filter(clientee -> !clientee.getCedula().equals(cedula)).collect(Collectors.toList());
 
     }
-    public void registrarProducto(String codigo,String nombre,String descripcion,double valorUnitario, int cantidadExistencia,String codigoAprovado,double temperatura,LocalDate vencimiento, LocalDate fechaEnvasado,double pesoEnvase){
+    public void registrarProducto(String codigo,String nombre,String descripcion,String valorUnitario, String cantidadExistencia,String codigoAprovado,String temperatura,LocalDate vencimiento, LocalDate fechaEnvasado,String pesoEnvase,String optione2) throws InformacionRepetidaException {
+        if (listaProductors.stream().anyMatch(producto -> producto.getCodigo().equals(codigo))){
+            crearAlertaError(("textoTituloAlertaErrorInformacionRepetida"), ("textoContenidoAlertaErrorInformacionRepetida"));
+            log.info("Se ha hecho un intento de registro de un producto  con datos repetidos.");
+            throw new InformacionRepetidaException(("textoInformacionRepetidaException"));
+        }
+
+
+
+            if(optione2.equals("prodEnvasado")){
+
+                ProdEvasado p = ProdEvasado.builder()
+                        .codigo(codigo)
+                        .nombre(nombre)
+                        .descripcion(descripcion)
+                        .valorUnitario(valorUnitario)
+                        .cantidadExistencia(cantidadExistencia)
+                        .fechaEnvasado(fechaEnvasado)
+                        .pesoEnvase(pesoEnvase)
+                        .build();
+                listaProductors.add(p);
+
+
+
+        } else if (optione2.equals("prodPerecederos")) {
+
+                ProdPerecederos p = ProdPerecederos.builder()
+                        .codigo(codigo)
+                        .nombre(nombre)
+                        .descripcion(descripcion)
+                        .valorUnitario(valorUnitario)
+                        .cantidadExistencia(cantidadExistencia)
+                        .vencimiento(vencimiento)
+                        .build();
+                listaProductors.add(p);
+
+
+        } else if (optione2.equals("prodRefrigerados")) {
+
+                ProdRefrigerado p = ProdRefrigerado.builder()
+                        .codigo(codigo)
+                        .nombre(nombre)
+                        .descripcion(descripcion)
+                        .valorUnitario(valorUnitario)
+                        .cantidadExistencia(cantidadExistencia)
+                        .codigoAprovado(codigoAprovado)
+                        .temperatura(temperatura)
+                        .build();
+                listaProductors.add(p);
+
+        }
 
     }
 

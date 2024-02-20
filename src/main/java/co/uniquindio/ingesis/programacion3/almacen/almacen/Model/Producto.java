@@ -8,8 +8,8 @@ public class Producto {
 
     private String codigo, nombre, descripcion;
 
-    private double  valorUnitario;
+    private String  valorUnitario;
 
-    private int cantidadExistencia;
+    private String cantidadExistencia;
 
 }

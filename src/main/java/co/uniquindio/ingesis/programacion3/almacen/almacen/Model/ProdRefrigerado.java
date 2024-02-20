@@ -8,6 +8,6 @@ public class ProdRefrigerado extends Producto{
 
     private String codigoAprovado;
 
-    private double temperatura;
+    private String temperatura;
 
 }
